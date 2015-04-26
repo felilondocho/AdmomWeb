@@ -19,14 +19,11 @@ import org.apache.activemq.ActiveMQConnectionFactory;
  */
 @WebServlet(name = "ConsumeServlet", urlPatterns = {"/ConsumeServlet"})
 public class ConsumeServlet extends HttpServlet {
-
-
-   boolean flag = true;
-   TopicConnection conn;
+    boolean flag = true;
+    TopicConnection conn;
     TopicSession sess;
     TopicSubscriber sub;
     String mensajito;
-   int j;
    void suscriptor(){
        try{
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
@@ -44,22 +41,22 @@ public class ConsumeServlet extends HttpServlet {
    
    MessageListener listener = new MessageListener() {
        // @Override
+       
         public void onMessage(Message msg) {
             if (msg instanceof TextMessage) {
                 TextMessage textMessage = (TextMessage) msg;
                 String text = null;
                 try {
-                    text = textMessage.getText();            
+                    text = textMessage.getText();    
                 } catch (JMSException e) {
                     text = "No han llegado";
                 }
-                mensajito = text;
+                mensajito = text;    
             }
         }
     };
    
     String getMessages(){
-        
         if(flag){
             suscriptor();
             flag = false;
@@ -78,9 +75,6 @@ public class ConsumeServlet extends HttpServlet {
         return mensajito;
     }
     
-    void clean(){
-        mensajito = null;
-    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -94,8 +88,7 @@ public class ConsumeServlet extends HttpServlet {
      */
     //@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
+            throws ServletException, IOException {       
         String mensajeaenviar = getMessages();
         if(mensajeaenviar != null){
             response.getWriter().write(mensajeaenviar);   
@@ -128,5 +121,7 @@ public class ConsumeServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-}
+
+   }
+         
 
