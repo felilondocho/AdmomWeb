@@ -4,6 +4,9 @@
     Author     : felipelondono
 --%>
 
+
+<%@page import="admom.DBConnect"%>
+<%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -13,10 +16,20 @@
     </head>
     <body>
         <h1>Insert Channel and Message to send:</h1>
-        <form action="Produce" method="post">
-            <input type="text" name="InputCanal" placeholder="Channel"><br>
-            <input type="text" name="InputMessage" placeholder="Message"><br>
-            <input type="submit" name="Enviar"><br>
+        <% ArrayList<String> list = new ArrayList();
+           DBConnect db = new DBConnect();
+           list = db.ListChannels(list);
+           out.println("<form action='ProducerServlet' method='post'>");
+           out.println("<input type='text' name='InputMessage' placeholder='Message'><br>");
+           for(int i=0;i<list.size();i++){
+               String aux = list.get(i);
+               if(!(aux.equals("id")) && !(aux.equals("Username"))){
+                   out.println("<input type='submit' value='"+aux+"' name='"+aux+"'>");
+               }
+           }
+           out.println("</form>");
+        %>
+        <form action="">
         </form>
     </body>
 </html>
