@@ -9,6 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <!--
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script>
             $(document).ready(
@@ -27,23 +28,14 @@
                     },3000);
                  });
         </script>
-        
+        -->
         <title>Send</title>
     </head>
     <body>
-        <h1>Insert channel and message to send</h1>
-        
-        <form action="Produce" method="post">
-            <input type="text" name="InputCanal" placeholder="Channel"><br>
-            <input type="text" name="InputMessage" placeholder="Message"><br>
-            <input type="submit" name="Enviar"><br>
+        <h1>Welcome! please insert your name</h1>
+        <form action="User.jsp" method="post">
+            <input type="text" placeholder="Name" name="username"><br>
+            <input type="submit" value="Enter">
         </form>
-        
-        <form action="ConsumerTest" method="post">
-            <input type="submit">
-        </form>
-        
-        <div id="show" align="center"></div>
-
     </body>
 </html>
