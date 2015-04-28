@@ -4,6 +4,17 @@
     Author     : felipelondono
 --%>
 
+<%@page import="java.util.Enumeration"%>
+<%
+    Enumeration enumeration = request.getParameterNames();
+    String channel = null;
+    while (enumeration.hasMoreElements()) {
+        String parameterName = (String) enumeration.nextElement();
+            channel = request.getParameter(parameterName);
+            session.setAttribute("channel", channel);
+    } 
+%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>

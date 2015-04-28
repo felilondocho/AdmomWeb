@@ -12,13 +12,14 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Send</title>
     </head>
     <body>
         <h1>Insert Channel and Message to send:</h1>
-        <% ArrayList<String> list = new ArrayList();
+        <% 
+           ArrayList<String> list = new ArrayList();
            DBConnect db = new DBConnect();
-           list = db.ListChannels(list);
+           list = db.ListChannelsUser(list, session.getAttribute("username").toString());
            out.println("<form action='ProducerServlet' method='post'>");
            out.println("<input type='text' name='InputMessage' placeholder='Message'><br>");
            for(int i=0;i<list.size();i++){
@@ -29,7 +30,5 @@
            }
            out.println("</form>");
         %>
-        <form action="">
-        </form>
-    </body>
+    </body>   
 </html>

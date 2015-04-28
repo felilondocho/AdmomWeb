@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 /**
@@ -24,15 +25,15 @@ public class ConsumeServlet extends HttpServlet {
     TopicSession sess;
     TopicSubscriber sub;
     String mensajito;
-   void suscriptor(){
+   void suscriptor(String subscribername, String channel){
        try{
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
                             "tcp://localhost:61616");
         conn = connectionFactory.createTopicConnection();       
             conn.setClientID("elID");
            sess = conn.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-            Destination destination = sess.createTopic("Deportes");
-            sub = sess.createDurableSubscriber((Topic) destination, "Felipe");
+            Destination destination = sess.createTopic(channel);
+            sub = sess.createDurableSubscriber((Topic) destination, subscribername);
              conn.start();
         }catch(JMSException ex){
             mensajito = ex.getMessage();
@@ -56,19 +57,13 @@ public class ConsumeServlet extends HttpServlet {
         }
     };
    
-    String getMessages(){
+    String getMessages(String subscribername, String channel){
         if(flag){
-            suscriptor();
+            suscriptor(subscribername,channel);
             flag = false;
         }
         try {  
             sub.setMessageListener(listener);
-            /*
-            Message mess = sub.receive(1000);
-            TextMessage textMessage = (TextMessage) mess;
-            mensajito = textMessage.getText();
-            conn.close();
-            */
         } catch (JMSException ex) {
           mensajito = ex.getMessage();
         }
@@ -88,8 +83,11 @@ public class ConsumeServlet extends HttpServlet {
      */
     //@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {       
-        String mensajeaenviar = getMessages();
+            throws ServletException, IOException {   
+        HttpSession session = request.getSession(true);
+        String mensajeaenviar = 
+                getMessages(session.getAttribute("username").toString(),
+                session.getAttribute("channel").toString());
         if(mensajeaenviar != null){
             response.getWriter().write(mensajeaenviar);   
         }else{
