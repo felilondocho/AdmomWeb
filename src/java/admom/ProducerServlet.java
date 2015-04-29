@@ -36,15 +36,12 @@ public class ProducerServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        try {
-            int i=0;
-            Canal can = new Canal(i,channel);
-            can.createCanal();
+        try {    
             DBConnect db = new DBConnect();
             boolean a = db.CreateChannel(channel);
             String msg = request.getParameter("InputMessage");
             productorprueba prueba = new productorprueba();
-            prueba.product(msg,can.getName());      
+            prueba.product(msg,channel);      
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Servlet Produce</title>");            

@@ -8,10 +8,7 @@ import java.io.IOException;
 import javax.jms.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 /**
@@ -84,10 +81,23 @@ public class ConsumeServlet extends HttpServlet {
     //@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {   
-        HttpSession session = request.getSession(true);
+        //HttpSession session = request.getSession(true);
+        Cookie[] cookies = request.getCookies();
+        Cookie usercookie = null;
+        Cookie channelcookie = null;
+        for(int i=0;i<cookies.length;i++){            
+            if(cookies[i].getName().toString().equals("username")){
+                usercookie = cookies[i];
+            }else{
+                if(cookies[i].getName().toString().equals("channelcookie")){
+                    channelcookie = cookies[i];
+                }
+            }
+        }
+        System.out.println(channelcookie.getValue().toString());
         String mensajeaenviar = 
-                getMessages(session.getAttribute("username").toString(),
-                session.getAttribute("channel").toString());
+                getMessages(usercookie.getValue().toString(),
+                channelcookie.getValue().toString());
         if(mensajeaenviar != null){
             response.getWriter().write(mensajeaenviar);   
         }else{

@@ -6,10 +6,30 @@
 
 <%@page import="admom.DBConnect"%>
 <%
-   String name = request.getParameter("username");
-   session.setAttribute("username", name);
-   DBConnect db = new DBConnect();
-   db.CreateUser(name);
+    Cookie[] cookies = request.getCookies();
+    Cookie username = null;
+    boolean existe = false;
+    for(int i=0;i<cookies.length;i++){
+        if(cookies[i].getName().toString().equals("username")){
+            username = cookies[i];
+            existe = true;
+        }
+    }
+    if(existe){
+      username.setValue(request.getParameter("username"));
+      username.setMaxAge(60*60*24);
+      response.addCookie(username);
+    }else{
+        username = new Cookie("username",request.getParameter("username"));
+        username.setMaxAge(60*60*24);
+        response.addCookie(username);
+        DBConnect db = new DBConnect();
+        db.CreateUser(username.getValue().toString());
+    }
+
+   //String name = request.getParameter("username");
+   //session.setAttribute("username", name);
+
 %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -17,10 +37,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title><%= session.getAttribute("username") %></title>
+        <title><%= username.getValue() %></title>
     </head>
     <body>
-        <h1>Welcome, <%= session.getAttribute("username") %></h1>
+        <h1>Welcome, <%= username.getValue() %></h1>
         <a href="Producerjsp.jsp"><input type="button" value="Send a Message"></a>
         <a href="ConsumerMenu.jsp"><input type="button" value="View messages"></a>
         <a href="ChannelMenu.jsp"><input type="button" value="View Channels"></a>

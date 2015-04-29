@@ -11,15 +11,22 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Menu</title>
     </head>
     <body>
         <h1>These are the channels to which you have subscribed</h1>
         <h1>Please Select the one you want to receive messages from:</h1>
         <% 
+            Cookie[] cookies = request.getCookies();
+           Cookie cookie = null;
+           for(int i=0;i<cookies.length;i++){            
+               if(cookies[i].getName().toString().equals("username")){
+                   cookie = cookies[i];
+               }
+           }
            ArrayList<String> list = new ArrayList();
            DBConnect db = new DBConnect();
-           list = db.ListChannelsUser(list, session.getAttribute("username").toString());
+           list = db.ListChannelsUser(list, cookie.getValue().toString());
            out.println("<form action='Consumejsp.jsp' method='post'>");
            for(int i=0;i<list.size();i++){
                String aux = list.get(i);

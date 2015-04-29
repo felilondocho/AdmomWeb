@@ -37,9 +37,8 @@ public class ProduceServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         DBConnect db = new DBConnect();
         try {
-            int i=0;
             String canal = request.getParameter("InputCanal");
-            Canal can = new Canal(i,canal);
+            Canal can = new Canal(canal);
             can.createCanal();
             db.CreateChannel(canal);
             String msg = request.getParameter("InputMessage");

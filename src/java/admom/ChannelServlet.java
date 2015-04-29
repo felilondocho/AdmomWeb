@@ -7,12 +7,13 @@ package admom;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.jms.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
+import org.apache.activemq.ActiveMQConnectionFactory;
 
 /**
  *
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "ChannelServlet", urlPatterns = {"/ChannelServlet"})
 public class ChannelServlet extends HttpServlet {
 
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -32,8 +34,18 @@ public class ChannelServlet extends HttpServlet {
         while (enumeration.hasMoreElements()) {
             String parameterName = (String) enumeration.nextElement();  
             channel = request.getParameter(parameterName);
-        }  
-        boolean dio = db.subscribe(channel, session.getAttribute("username").toString());
+        }
+        Cookie[] cookies = request.getCookies();
+        Cookie cookie = null;
+        for(int i=0;i<cookies.length;i++){            
+            if(cookies[i].getName().toString().equals("username")){
+                cookie = cookies[i];
+            }
+        }
+        boolean dio = db.subscribe(channel, cookie.getValue().toString());
+
+        //ConsumeServlet con = new ConsumeServlet();
+        //con.suscriptor(cookie.getValue().toString(), channel);
         try {
             out.println("<html>");
             out.println("<head>");
@@ -45,7 +57,6 @@ public class ChannelServlet extends HttpServlet {
             }else{
                 out.println("<h1>Not Subscribed</h1>");
             }
-            out.println("<a href='http://localhost:8080/AdmomWeb/User.jsp'>Return</a>");
             out.println("</body>");
             out.println("</html>");
 

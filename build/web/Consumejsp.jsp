@@ -11,8 +11,26 @@
     while (enumeration.hasMoreElements()) {
         String parameterName = (String) enumeration.nextElement();
             channel = request.getParameter(parameterName);
-            session.setAttribute("channel", channel);
     } 
+    Cookie[] cookies = request.getCookies();
+    Cookie channelcookie = null;
+    boolean existe = false;
+    for(int i=0;i<cookies.length;i++){            
+        if(cookies[i].getName().toString().equals("channelcookie")){
+            channelcookie = cookies[i];
+            existe = true;
+        }
+    }
+    if(existe){
+        channelcookie.setValue(channel);
+        channelcookie.setMaxAge(60*60*24);
+        response.addCookie(channelcookie);
+    }else{
+        channelcookie = new Cookie("channelcookie",channel);
+        channelcookie.setMaxAge(60*60*24);
+        response.addCookie(channelcookie);
+    }
+    
 %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -38,9 +56,10 @@
                     },3000);
                  });
         </script>
-        <title>Page</title>
+        <title>Messages</title>
     </head>
     <body>
+        <h1>Messages received: </h1><br>
         <div id="show" align="center"></div>
     </body>
 </html>

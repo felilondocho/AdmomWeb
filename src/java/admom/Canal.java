@@ -14,11 +14,9 @@ import org.apache.activemq.ActiveMQConnectionFactory;
  * @author felipelondono
  */
 public class Canal {
-    int id;
     String name;
     
-    Canal(int id,String name){
-        this.id = id;
+    Canal(String name){
         this.name = name;
     }
     

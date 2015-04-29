@@ -17,9 +17,16 @@
     <body>
         <h1>Insert Channel and Message to send:</h1>
         <% 
+           Cookie[] cookies = request.getCookies();
+           Cookie cookie = null;
+           for(int i=0;i<cookies.length;i++){            
+               if(cookies[i].getName().toString().equals("username")){
+                   cookie = cookies[i];
+               }
+           }
            ArrayList<String> list = new ArrayList();
            DBConnect db = new DBConnect();
-           list = db.ListChannelsUser(list, session.getAttribute("username").toString());
+           list = db.ListChannelsUser(list, cookie.getValue().toString());
            out.println("<form action='ProducerServlet' method='post'>");
            out.println("<input type='text' name='InputMessage' placeholder='Message'><br>");
            for(int i=0;i<list.size();i++){

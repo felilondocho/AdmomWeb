@@ -11,11 +11,18 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Channel Menu</title>
     </head>
     <body>
         <h1>Here are the available channels, click on which you want to subscribe</h1>
         <% 
+         Cookie[] cookies = request.getCookies();
+           Cookie cookie = null;
+           for(int i=0;i<cookies.length;i++){            
+               if(cookies[i].getName().toString().equals("username")){
+                   cookie = cookies[i];
+               }
+           }
            ArrayList<String> list = new ArrayList();
            DBConnect db = new DBConnect();
            list = db.ListChannels(list);
@@ -29,6 +36,7 @@
            out.println("</form>");
         %>
         <br>
+        <h1><%= cookie.getValue().toString()%></h1>
         <h1>Or you can create a channel</h1>
         <form action="" method="post">
             <input type="text" name="channelinput" placeholder="Channel name">
