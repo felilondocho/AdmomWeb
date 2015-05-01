@@ -36,7 +36,6 @@
            out.println("</form>");
         %>
         <br>
-        <h1><%= cookie.getValue().toString()%></h1>
         <h1>Or you can create a channel</h1>
         <form action="" method="post">
             <input type="text" name="channelinput" placeholder="Channel name">

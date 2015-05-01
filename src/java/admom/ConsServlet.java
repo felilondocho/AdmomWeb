@@ -5,25 +5,32 @@
 package admom;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.jms.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 /**
  *
  * @author felipelondono
  */
-@WebServlet(name = "ConsumeServlet", urlPatterns = {"/ConsumeServlet"})
-public class ConsumeServlet extends HttpServlet {
-    boolean flag = true;
+@WebServlet(name = "ConsServlet", urlPatterns = {"/ConsServlet"})
+public class ConsServlet extends HttpServlet {
+
+        boolean flag = true;
     TopicConnection conn;
     TopicSession sess;
     TopicSubscriber sub;
     String mensajito;
+
     
    void suscriptor(String subscribername, String channel){
+       System.out.println("CONEXION");
                try{
             ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
                                 "tcp://localhost:61616");
@@ -39,9 +46,9 @@ public class ConsumeServlet extends HttpServlet {
         }
    }
    
+   /*
    MessageListener listener = new MessageListener() {
        // @Override
-       
         public void onMessage(Message msg) {
             if(sub != null){
             if (msg instanceof TextMessage) {
@@ -49,7 +56,6 @@ public class ConsumeServlet extends HttpServlet {
                 String text = null;
                 try {
                     text = textMessage.getText();
-                    
                 } catch (JMSException e) {
                     text = "No han llegado";
                 }
@@ -58,6 +64,8 @@ public class ConsumeServlet extends HttpServlet {
             }
         }
     };
+    * 
+    */
    
     String getMessages(String subscribername, String channel){
         if(flag){
@@ -65,13 +73,47 @@ public class ConsumeServlet extends HttpServlet {
             flag = false;
         }
         try {  
-            sub.setMessageListener(listener);
+            //sub.setMessageListener(listener);
+            Message mess = sub.receive(1000);
+            if(mess != null){
+                TextMessage textMessage = (TextMessage) mess;
+                mensajito = textMessage.getText();
+            }
         } catch (JMSException ex) {
             System.out.println(ex.getMessage());
         }
         return mensajito;
     }
     
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        try {
+            try {
+                System.out.println("Entra al coso");
+                sub.close();
+                sess.close();
+                conn.close();
+                
+                mensajito = null;
+                flag = true;
+            } catch (JMSException ex) {
+                System.out.println(ex.getMessage());
+            }
+            
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet ConsServlet</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            response.sendRedirect("User.jsp");
+            out.println("</body>");
+            out.println("</html>");
+        } finally {            
+            out.close();
+        }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -83,11 +125,10 @@ public class ConsumeServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    //@Override
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {   
-        //HttpSession session = request.getSession(true);
-        Cookie[] cookies = request.getCookies();
+            throws ServletException, IOException {
+                Cookie[] cookies = request.getCookies();
         Cookie usercookie = null;
         Cookie channelcookie = null;
         for(int i=0;i<cookies.length;i++){            
@@ -99,17 +140,16 @@ public class ConsumeServlet extends HttpServlet {
                 }
             }
         }
-        System.out.println(channelcookie.getValue().toString());
         String mensajeaenviar = 
                 getMessages(usercookie.getValue().toString(),
                 channelcookie.getValue().toString());
-        if(mensajeaenviar != null){
+        System.out.println(mensajeaenviar);
+        if(mensajeaenviar != null && !"".equals(mensajeaenviar)){
             response.getWriter().write(mensajeaenviar);   
         }else{
             response.getWriter().write("No hay mensajes disponibles");
         }
     }
-
 
     /**
      * Handles the HTTP
@@ -123,7 +163,7 @@ public class ConsumeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //processRequest(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -135,7 +175,4 @@ public class ConsumeServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-   }
-         
-
+}

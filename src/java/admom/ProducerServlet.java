@@ -9,10 +9,7 @@ import java.io.PrintWriter;
 import java.util.Enumeration;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
 /**
  *
@@ -32,7 +29,14 @@ public class ProducerServlet extends HttpServlet {
                 channel = request.getParameter(parameterName);
                 session.setAttribute("channel", channel);
             }
-        }                
+        }  
+        Cookie[] cookies = request.getCookies();
+        Cookie user = null;
+           for(int i=0;i<cookies.length;i++){            
+               if(cookies[i].getName().toString().equals("username")){
+                   user = cookies[i];
+               }
+           }
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
@@ -41,7 +45,7 @@ public class ProducerServlet extends HttpServlet {
             boolean a = db.CreateChannel(channel);
             String msg = request.getParameter("InputMessage");
             productorprueba prueba = new productorprueba();
-            prueba.product(msg,channel);      
+            prueba.product(msg,channel,user.getValue().toString());      
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Servlet Produce</title>");            
@@ -60,7 +64,7 @@ public class ProducerServlet extends HttpServlet {
             out.println("<title>Servlet Produce</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>neh</h1>");
+            out.println("<h1>"+e.getMessage()+"</h1>");
             out.println("</body>");
             out.println("</html>");
         }

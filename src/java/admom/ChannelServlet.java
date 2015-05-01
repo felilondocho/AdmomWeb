@@ -22,6 +22,29 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 @WebServlet(name = "ChannelServlet", urlPatterns = {"/ChannelServlet"})
 public class ChannelServlet extends HttpServlet {
 
+    /*
+        TopicConnection conn;
+        TopicSession sess;
+        TopicSubscriber sub;
+    void suscriptor(String subscribername, String channel){
+        try{
+            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
+                                "tcp://localhost:61616");
+
+            conn = connectionFactory.createTopicConnection();  
+                conn.setClientID(subscribername);
+              
+                    sess = conn.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+                    Destination destination = sess.createTopic(channel);
+                    sub = sess.createDurableSubscriber((Topic) destination, subscribername);
+                    conn.start();
+                    
+            }catch(JMSException ex){
+                System.out.println(ex.getMessage());
+            }
+    }
+    * 
+    */
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -45,7 +68,7 @@ public class ChannelServlet extends HttpServlet {
         boolean dio = db.subscribe(channel, cookie.getValue().toString());
 
         //ConsumeServlet con = new ConsumeServlet();
-        //con.suscriptor(cookie.getValue().toString(), channel);
+        //suscriptor(cookie.getValue().toString(), channel);
         try {
             out.println("<html>");
             out.println("<head>");
@@ -54,6 +77,7 @@ public class ChannelServlet extends HttpServlet {
             out.println("<body>");
             if(dio){
                 out.println("<h1>You Have subscribed to: "+channel+"</h1>");
+                
             }else{
                 out.println("<h1>Not Subscribed</h1>");
             }

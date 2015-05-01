@@ -46,7 +46,7 @@
                     var i = 0;
                     var aux;
                     setInterval(function() {        
-                        $.get('ConsumeServlet',function(responseText) {
+                        $.get('ConsServlet',function(responseText) {
                             aux = responseText;
                             if(aux != lsmensajes[lsmensajes.length - 1]){
                                 lsmensajes.push(aux);
@@ -59,7 +59,10 @@
         <title>Messages</title>
     </head>
     <body>
-        <h1>Messages received: </h1><br>
+        <h1>Messages received from <%= channel %>: </h1><br>
         <div id="show" align="center"></div>
+        <form action="ConsServlet" method="post">
+            <input type="submit" value="GOBACK">
+        </form>
     </body>
 </html>

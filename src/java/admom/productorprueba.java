@@ -12,8 +12,10 @@ import org.apache.activemq.ActiveMQConnectionFactory;
  * @author felipelondono
  */
 public class productorprueba {
-    public void product(String msg, String topic){
+    public void product(String msg, String topic,String user){
+
         try {
+
         ActiveMQConnectionFactory connectionFactory =
                 new ActiveMQConnectionFactory("tcp://localhost:61616");
         Connection connection = connectionFactory.createConnection();
@@ -24,8 +26,8 @@ public class productorprueba {
         
         MessageProducer productor = session.createProducer(destination);
 
-        
-        TextMessage message = session.createTextMessage(msg);
+        String mensaje = user +": " + msg;
+        TextMessage message = session.createTextMessage(mensaje);
         productor.send(message, DeliveryMode.PERSISTENT, 4,3600000);//1 hour
         session.close();
         connection.close();
