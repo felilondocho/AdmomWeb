@@ -55,16 +55,22 @@ public class ProducerServlet extends HttpServlet {
                 out.println("<h1> The message: " + msg + " has been sent to:  " + channel +"</h1>");
             }else{
                 out.println("<h1>No dio</h1>");
-            } 
+            }
+            out.println("<form action='User.jsp'>");
+            out.println("<input type='submit' value='GO BACK'>");
+            out.println("</form>");
             out.println("</body>");
             out.println("</html>");
         }catch(Exception e){
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Produce</title>");            
+            out.println("<title>Error</title>");            
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>"+e.getMessage()+"</h1>");
+            out.println("<form action='ChannelMenu.jsp'>");
+            out.println("<input type='submit' value='GO BACK'>");
+            out.println("</form>");
             out.println("</body>");
             out.println("</html>");
         }

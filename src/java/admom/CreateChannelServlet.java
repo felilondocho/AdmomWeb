@@ -6,87 +6,41 @@ package admom;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.jms.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
-import org.apache.activemq.ActiveMQConnectionFactory;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
  * @author felipelondono
  */
-@WebServlet(name = "ChannelServlet", urlPatterns = {"/ChannelServlet"})
-public class ChannelServlet extends HttpServlet {
+@WebServlet(name = "CreateChannelServlet", urlPatterns = {"/CreateChannelServlet"})
+public class CreateChannelServlet extends HttpServlet {
 
-    /*
-        TopicConnection conn;
-        TopicSession sess;
-        TopicSubscriber sub;
-    void suscriptor(String subscribername, String channel){
-        try{
-            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
-                                "tcp://localhost:61616");
-
-            conn = connectionFactory.createTopicConnection();  
-                conn.setClientID(subscribername);
-              
-                    sess = conn.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-                    Destination destination = sess.createTopic(channel);
-                    sub = sess.createDurableSubscriber((Topic) destination, subscribername);
-                    conn.start();
-                    
-            }catch(JMSException ex){
-                System.out.println(ex.getMessage());
-            }
-    }
-    * 
-    */
-    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        HttpSession session = request.getSession(true);
-        DBConnect db = new DBConnect();
-        Enumeration enumeration = request.getParameterNames();
-        String channel = null;
-        while (enumeration.hasMoreElements()) {
-            String parameterName = (String) enumeration.nextElement();  
-            channel = request.getParameter(parameterName);
-        }
-        Cookie[] cookies = request.getCookies();
-        Cookie cookie = null;
-        for(int i=0;i<cookies.length;i++){            
-            if(cookies[i].getName().toString().equals("username")){
-                cookie = cookies[i];
-            }
-        }
-        boolean dio = db.subscribe(channel, cookie.getValue().toString());
-
-        //ConsumeServlet con = new ConsumeServlet();
-        //suscriptor(cookie.getValue().toString(), channel);
         try {
+            DBConnect db = new DBConnect();
+            String channelname = request.getParameter("channelinput");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Channel</title>");            
+            out.println("<title>Create</title>");            
             out.println("</head>");
             out.println("<body>");
-            if(dio){
-                out.println("<h1>You Have subscribed to: "+channel+"</h1>");
-                
+            if(db.CreateChannel(channelname)){
+                out.println("<h1>Channel " + channelname + " created successfully</h1>");
             }else{
-                out.println("<h1>Not Subscribed</h1>");
-            }
+                out.println("<h1>Not created</h1>");
+            }  
             out.println("<form action='ChannelMenu.jsp'>");
             out.println("<input type='submit' value='GO BACK'>");
             out.println("</form>");
             out.println("</body>");
             out.println("</html>");
-
         } finally {            
             out.close();
         }

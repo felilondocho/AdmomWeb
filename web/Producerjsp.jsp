@@ -37,5 +37,9 @@
            }
            out.println("</form>");
         %>
+        <br>
+        <form action="User.jsp">
+            <input type='submit' value='GO BACK'>
+        </form>
     </body>   
 </html>

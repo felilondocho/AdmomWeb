@@ -37,10 +37,13 @@
         %>
         <br>
         <h1>Or you can create a channel</h1>
-        <form action="" method="post">
+        <form action="CreateChannelServlet" method="post">
             <input type="text" name="channelinput" placeholder="Channel name">
             <input type='submit' value='Create Channel' name='create'>
         </form>
-            
+        <br>
+        <form action="User.jsp">
+            <input type='submit' value='GO BACK'>
+        </form>
     </body>
 </html>

@@ -4,7 +4,7 @@
     Author     : felipelondono
 --%>
 
-<%@page import="admom.Activemq"%>
+
 <%@page import="admom.DBConnect"%>
 <%
     Cookie[] cookies = request.getCookies();
