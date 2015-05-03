@@ -7,8 +7,6 @@ package admom;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.jms.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,7 +20,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 @WebServlet(name = "ChannelServlet", urlPatterns = {"/ChannelServlet"})
 public class ChannelServlet extends HttpServlet {
 
-    /*
+    
         TopicConnection conn;
         TopicSession sess;
         TopicSubscriber sub;
@@ -38,13 +36,15 @@ public class ChannelServlet extends HttpServlet {
                     Destination destination = sess.createTopic(channel);
                     sub = sess.createDurableSubscriber((Topic) destination, subscribername);
                     conn.start();
-                    
+                    sub.close();
+                    sess.close();
+                    conn.close();
+                
             }catch(JMSException ex){
                 System.out.println(ex.getMessage());
             }
     }
-    * 
-    */
+
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -68,7 +68,7 @@ public class ChannelServlet extends HttpServlet {
         boolean dio = db.subscribe(channel, cookie.getValue().toString());
 
         //ConsumeServlet con = new ConsumeServlet();
-        //suscriptor(cookie.getValue().toString(), channel);
+        suscriptor(cookie.getValue().toString(), channel);
         try {
             out.println("<html>");
             out.println("<head>");
